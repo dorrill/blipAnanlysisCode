@@ -227,6 +227,48 @@ def groupDataEventsAndAddMaxblipConditional(thisDF):
             #print "Sum q's: ",summedCloseClusters
     return maxblips,summedCloseClusters
 
+def plotAllRegionBlips(df_Event):
+    dfblip_y_vals=[]
+    dfblip_z_vals=[]
+    all_blip_energies=[]
+    g10_blip_energies=[]
+
+    y_arrays=df_Event['blip_y']
+    z_arrays=df_Event['blip_z']
+    blip_arrays=df_Event['blip_energy']
+
+    for i in range(50000):
+        for j in range(len(z_arrays[i])):
+            y_val=y_arrays[i][j]
+            z_val=z_arrays[i][j]
+            blip_val=blip_arrays[i][j]
+            rnblip_z_vals.append(z_val)
+            rnblip_y_vals.append(y_val)
+            all_blip_energies.append(blip_val)
+            if((y_val > 90.0 and y_val < 117.0) and ((z_val>10 and z_val<50) or (z_val>90 and z_val<130) or (z_val>210 and z_val<250) or (z_val>320 and z_val<360) or (z_val>440 and z_val<470) or (z_val>560 and z_val<600) or (z_val>660 and z_val<700) or (z_val>780 and z_val<810) or (z_val>890 and z_val<930) or (z_val>980 and z_val<1100) )) or ((y_val < 60.0 and y_val > 40.0 ) and ((z_val>0 and z_val<40) or (z_val>1000 and z_val<1200)) or ((y_val < -90.0 and y_val > -117.0) and ((z_val>10 and z_val<50) or (z_val>90 and z_val<130) or (z_val>210 and z_val<250) or (z_val>320 and z_val<360) or (z_val>440 and z_val<470) or (z_val>560 and z_val<600) or (z_val>660 and z_val<700) or (z_val>780 and z_val<810) or (z_val>890 and z_val<930) or (z_val>980 and z_val<1100) )) or ((y_val < -40.0 and y_val > -60.0 ) and ((z_val>0 and z_val<40)or (z_val>1000 and z_val<1200)))):
+                g10_blip_energies.append(blip_arrays[i][j])
+
+    #Make a pretty 2D plot of blips in the Detectorfig = plt.figure(figsize=(12,8))
+    #Also plot the energies
+    plt.tight_layout()
+    plt.hist2d(rnblip_z_vals,rnblip_y_vals,bins=(100,100), range=[[-100,1100], [-120,120]],label='RN Data')#,norm=LogNorm())
+    plt.colorbar()
+    plt.title("All Region Blips")
+    plt.xlabel('Z')
+    plt.ylabel('Y')
+
+    BINS = np.linspace(0,2.0,140)
+    fig = plt.figure(figsize=(12,7))
+    lowthresh_hist,b1,p1 = plt.hist(all_blip_energies,histtype='step',bins = BINS,lw=2,label='Blip Energies, all regions',color='blue',normed=False)
+    g10_hist,b2,p2 = plt.hist(g10_blip_energies,histtype='step',bins = BINS,lw=2,label='G10 Blip Energies,',color='orange',normed=False)
+
+    plt.title("All Region Blip Energies")
+    plt.xlabel("Blip  Energy (MeV)")
+    plt.ylabel('Number of entries')
+    plt.grid()
+    plt.legend(loc=1,fontsize='small')
+    #plt.yscale('log')
+
 def returnMaxBlipEs(thisDF): #Find the highest blip energy in an event, or eventdisplay
     maxblips = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])

@@ -1,0 +1,75 @@
+<?xml version="1.10"?>
+
+<!-- Production Project -->
+
+<!DOCTYPE project [
+<!ENTITY user_id "rdorrill">
+<!ENTITY name "gammas_5evt_v1.10">
+<!ENTITY release "v08_00_00_28"> 
+<!ENTITY file_type "mc">
+<!ENTITY run_type "physics">
+<!ENTITY tag "gamma_sim">
+<!ENTITY date "06_08_2020">
+<!ENTITY prod_mode "test"> 
+<!ENTITY stagename "genall">
+<!ENTITY number_of_jobs "400">
+<!ENTITY number_of_events "18000"> 
+]>
+
+<project name="&name;">
+
+  <!-- Project size -->
+  <numevents>&number_of_events;</numevents>
+
+  <!-- Operating System -->
+  <os>SL6</os>
+
+  <!-- Batch resources -->
+  <resource>OPPORTUNISTIC,DEDICATED</resource>
+  
+  <!-- Project Version -->
+  <version>&prod_mode;_&release;</version>
+
+  <!-- Larsoft information -->
+  <larsoft>
+    <tag>&release;</tag>
+    <qual>e17:prof</qual>
+    <!--    <local>/pnfs/uboone/resilient/users/markross/tars/mcc9_singlephoton_v15.0.tar</local> -->
+  </larsoft>
+
+  <check>0</check>
+  <copy>0</copy>
+
+  <fcldir>/uboone/app/users/rdorrill/gammaSimulation/</fcldir>
+
+  <!-- Project stages -->
+
+  <stage name="&stagename;">
+    <fcl>prod_gamma_uboone_HEPEVT_grid.fcl</fcl>
+    <fcl>wirecell_g4_uboone.fcl</fcl>
+    <fcl>wirecell_detsim_uboone.fcl</fcl>
+    <fcl>reco_uboone_mcc9_8_driver_stage1.fcl</fcl>
+    <fcl>reco_uboone_mcc9_8_driver_stage2_fullMC.fcl</fcl>
+    <outdir>/pnfs/uboone/scratch/users/&user_id;/&tag;/&release;/&date;/&stagename;/&name;</outdir>
+    <logdir>/pnfs/uboone/scratch/users/&user_id;/&tag;/&release;/&date;/&stagename;/&name;</logdir>
+    <bookdir>/uboone/data/users/&user_id;/book/&tag;/&release;/&date;/&stagename;/&name;</bookdir>
+    <workdir>/pnfs/uboone/resilient/users/&user_id;/work/&tag;/&date;/&release;/&stagename;/&name;</workdir>
+    <numjobs>&number_of_jobs;</numjobs>
+    <!--<schema>root</schema> -->   <!-- try uncommenting next --> 
+    <maxfilesperjob>1</maxfilesperjob>
+    <memory>9000</memory> <!-- 6k-->
+    <disk>40GB</disk><!-- previously 30 -->
+    <inputmode>textfile</inputmode>
+    <inputlist>/uboone/app/users/rdorrill/gammaSimulation/HEPEvtData/gammaHEPEVT_tighterg10_b.list</inputlist>
+    <prestagefraction>1</prestagefraction>
+    <jobsub> --expected-lifetime=20h --append_condor_requirements='(TARGET.HAS_CVMFS_uboone_opensciencegrid_org==true)' -f /pnfs/uboone/resilient/users/markross/tars/MCC9_channel_list.txt </jobsub>
+    <jobsub_start>   --append_condor_requirements='(TARGET.HAS_CVMFS_uboone_opensciencegrid_org==true)' -f /pnfs/uboone/resilient/users/markross/tars/MCC9_channel_list.txt  </jobsub_start>
+  </stage>  
+ 
+  <!-- file type -->
+  <filetype>&file_type;</filetype>
+
+  <!-- run type -->
+  <runtype>&run_type;</runtype>
+
+</project>

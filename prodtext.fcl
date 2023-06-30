@@ -1,0 +1,73 @@
+#include "services_microboone_basic.fcl"
+#include "services_microboone_simulation.fcl"
+#include "time_memory_tracker_microboone.fcl"
+
+process_name: TextGen
+
+services:
+{
+  # Load the service that manages root files for histograms.
+  TFileService: { fileName: "reco_hist.root" }
+  RandomNumberGenerator: {}
+  @table::microboone_simulation_services
+}
+
+
+#Start each new event with an empty event.
+source:
+{
+  module_type: EmptyEvent
+  #timestampPlugin: { plugin_type: "GeneratedEventTimestamp" }
+  #maxEvents:   1000000        # Number of events to create
+  maxEvents:   5000        # Number of events to create
+  firstRun:    1           # Run number to use for this file
+  firstSubRun: 1
+  firstEvent:  1           # number of first event in the file
+}
+
+# Define and configure some modules to do work on each event.
+# First modules are defined; they are scheduled later.
+# Modules are grouped by type.
+physics:
+{
+
+ producers:
+ {
+   generator: @local::standard_textfilegen
+ }
+
+ filters:
+ {
+ }
+
+ #define the producer and filter modules for this path, order matters,
+ #filters reject all following items.  see lines starting physics.producers below
+ simulate: [ generator ]
+
+ #define the output stream, there could be more than one if using filters
+ stream1:  [ out1 ]
+
+ #trigger_paths is a keyword and contains the paths that modify the art::event,
+ #ie filters and producers
+ trigger_paths: [ simulate ]
+
+ #end_paths is a keyword and contains the paths that do not modify the art::Event,
+ #ie analyzers and output streams.  these all run simultaneously
+ end_paths:     [ stream1 ]
+}
+
+outputs:
+{
+ out1:
+ {
+   module_type: RootOutput
+   fileName:    "uboone_gammas_prodtext_%#.root"
+   SelectEvents: [ simulate ]
+
+   fileProperties: {
+    maxEvents: 10000
+   }
+
+ }
+}
+physics.producers.generator.InputFileName:"prodlist_gammas.txt"

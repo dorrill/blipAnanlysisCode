@@ -17,8 +17,8 @@ def checkBlipSDev(df_to_test): #Calculate standard deviation of blip charges in 
                 goodEventNum += 1
 
         numEvents += 1
-    print "Number events out of %s with variable blip_q: "%(numEvents), goodEventNum
-    print "Percent good events: ", 100*goodEventNum/numEvents
+    print("Number events out of %s with variable blip_q: "%(numEvents), goodEventNum)
+    print("Percent good events: ", 100*goodEventNum/numEvents)
 
 def countBlipMultiplicity(df_to_test,complete_df): #counts blip multiplicity around a max point
     numMaxPts = 6 #max number of clusters to sum
@@ -27,7 +27,7 @@ def countBlipMultiplicity(df_to_test,complete_df): #counts blip multiplicity aro
 
     df_grouped = df_to_test.groupby(["event","run","timestamp"])
     #cd_grouped = completeDetDF(["event","run","timestamp"])
-    print "Number of events with energies: ", df_grouped["blip_energy"].first().count() #counting number of unique events
+    print("Number of events with energies: ", df_grouped["blip_energy"].first().count()) #counting number of unique events
     counter = 0
 
     for group_name, df_group in df_grouped:
@@ -67,7 +67,7 @@ def countBlipMultiplicity(df_to_test,complete_df): #counts blip multiplicity aro
         counter+=1
         if counter > 3000:
                 break
-    print "Number of energy clusters in this DF: ", len(summedBlipEs), " out of "," energies total"
+    print("Number of energy clusters in this DF: ", len(summedBlipEs), " out of "," energies total")
     return summedBlipEs,multiplicityInRadius
 
 def DistTweenTwoPoints(memberA,memberB): #calculates the real 3D distance between two blips or events in the detector
@@ -81,8 +81,6 @@ def DistTweenTwoPoints(memberA,memberB): #calculates the real 3D distance betwee
     deltaySqd = ((yA-yB)**2)
     deltazSqd= ((zA-zB)**2)
     dist_from_A = np.sqrt(deltaxSqd+deltaySqd+deltazSqd)
-    #print "x1,x2: (%s,%s)\ty1,y2: (%s,%s)\tz1,z2: (%s,%s)\t"%(xA,xB,yA,yB,zA,zB)
-    #print "Distance: ",dist_from_A
     return dist_from_A
 
 def DistTweenMaxNPoint(xA,yA,zA,memberB):
@@ -93,8 +91,8 @@ def DistTweenMaxNPoint(xA,yA,zA,memberB):
     deltaySqd = ((yA-yB)**2)
     deltazSqd= ((zA-zB)**2)
     dist_from_A = np.sqrt(deltaxSqd+deltaySqd+deltazSqd)
-    #print "x1,x2: (%s,%s)\ty1,y2: (%s,%s)\tz1,z2: (%s,%s)\t"%(xA,xB,yA,yB,zA,zB)
-    #print "Distance: ",dist_from_A
+    #print(x1,x2: (%s,%s)\ty1,y2: (%s,%s)\tz1,z2: (%s,%s)\t"%(xA,xB,yA,yB,zA,zB))
+    #print("Distance: ",dist_from_A)
     return dist_from_A
 
 def distancesFromPt(Loc,thisGroup):#distance between one blip and all other blips in event
@@ -134,49 +132,42 @@ def distancesFromPtSlick(ptLoc,thisGroup,NumRows): #Shorter, but actually slower
     return f_distances
 
 def fractionAboveEnergy(thisDF,E_lower_bound):  #Calculate the percentage of blips above a certain minimum energy
-    #print "working location"
+    #print("working location")
     all_energies = thisDF["blip_energy"]
     thisDF_E_cut = thisDF.query('energy>%s'%(E_lower_bound))
     cut_energies = thisDF_E_cut["blip_energy"]
-    print "Fraction: ", (float(len(cut_energies))/float(len(all_energies))),"\n From ", len(cut_energies), " out of total ", len(all_energies)
+    print("Fraction: ", (float(len(cut_energies))/float(len(all_energies))),"\n From ", len(cut_energies), " out of total ", len(all_energies))
 
 def fractionEnergiesWithNoNeutrinos(thisDF):  #Find the percent of events with energies with no neutrinos in them
     #Fraction for blip branch... should do for event branch
     cNoNu = 'neutrinos == 0 and neutrinoshowers==0 and cosmic_trk_50==0'
-    #print "working location"
     all_energies = thisDF["blip_energy"]
     thisDF_Nu_cut = thisDF.query(cNoNu)
     cut_energies = thisDF_Nu_cut["blip_energy"]
-    print "Fraction: ", (float(len(cut_energies))/float(len(all_energies))),"\n From ", len(cut_energies), " out of total ", len(all_energies)
+    print("Fraction: ", (float(len(cut_energies))/float(len(all_energies))),"\n From ", len(cut_energies), " out of total ", len(all_energies))
 
 def fractionWithNoNeutrinos(thisDF): #Find the percent of events with no neutrinos in them
     #Fraction for blip branch... should do for event branch
     cNoNu = 'neutrinos == 0 and neutrinoshowers==0 and cosmic_trk_50==0'
-    #print "working location"
     all_energies = thisDF["blip_energy"]
     thisDF_Nu_cut = thisDF.query(cNoNu)
     cut_energies = thisDF_Nu_cut["blip_energy"]
-    print "Fraction: ", (float(len(cut_energies))/float(len(all_energies))),"\n From ", len(cut_energies), " out of total ", len(all_energies)
+    print("Fraction: ", (float(len(cut_energies))/float(len(all_energies))),"\n From ", len(cut_energies), " out of total ", len(all_energies))
 
 def fractionEVTsWithNoNeutrinos(thisDF_EVT):
     evt_times = thisDF_EVT["evttime"]
     thisDF_Nu_cut = thisDF_EVT.query(cNoNu)
     cut_evt_ts = thisDF_Nu_cut["evttime"]
-    print "Fraction events with no neutrinos: ", (float(len(cut_evt_ts ))/float(len(evt_times))),"\n Or ", len(cut_evt_ts), " out of total ", len(evt_times)
+    print("Fraction events with no neutrinos: ", (float(len(cut_evt_ts ))/float(len(evt_times))),"\n Or ", len(cut_evt_ts), " out of total ", len(evt_times))
 
 def groupDataEventsAndAddMaxblip(thisDF):
     summedCloseClusters = [] #for max blip_Q in an event + nearest neighbor
     maxblips = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
-    print "Number of max blip points: ", df_grouped["blip_cluster_charge"].max().count() #counting number of unique events
+    print("Number of max blip points: ", df_grouped["blip_cluster_charge"].max().count()) #counting number of unique events
     #Here, we're cycling through all the stuff in one event -- since we're on blip branch, this is a collection of blip points
     for group_name, df_group in df_grouped:
-        #print df_group[group_name]
-        #print df_group
-        #print "\nDf_group EV min: ",df_group["blip_cluster_charge"].min()
-
         eventMaxq = df_group["blip_cluster_charge"].max()
-        #print "EventMaxq: ",eventMaxq
         if eventMaxq > -0.01:
             maxLocation = df_group.loc[df_group["blip_cluster_charge"].idxmax()]
         else:
@@ -184,10 +175,9 @@ def groupDataEventsAndAddMaxblip(thisDF):
 
         blip_qs_ievent = df_group["blip_cluster_charge"].agg(list)
         distancesfromMax = distancesFromPt(maxLocation,df_group)
-        #print "d's: ",distancesfromMax
 
         if len(distancesfromMax) != len(blip_qs_ievent):
-            print "Length mismatch... in distances and q's"
+            print("Length mismatch... in distances and q's")
         else:
             maxblips.append(eventMaxq)
             qindex = distancesfromMax.index(min(distancesfromMax))
@@ -200,15 +190,10 @@ def groupDataEventsAndAddMaxblipConditional(thisDF):
     summedCloseClusters = [] #for max blip_Q in an event + nearest neighbor
     maxblips = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
-    print "Number of max blip points: ", df_grouped["blip_cluster_charge"].max().count() #counting number of unique events
+    print("Number of max blip points: ", df_grouped["blip_cluster_charge"].max().count()) #counting number of unique events
     #Here, we're cycling through all the stuff in one event -- since we're on blip branch, this is a collection of blip points
     for group_name, df_group in df_grouped:
-        #print df_group[group_name]
-        #print df_group
-        #print "\nDf_group EV min: ",df_group["blip_cluster_charge"].min()
-
         eventMaxq = df_group["blip_cluster_charge"].max()
-        #print "EventMaxq: ",eventMaxq
         if eventMaxq > -0.01:
             maxLocation = df_group.loc[df_group["blip_cluster_charge"].idxmax()]
         else:
@@ -216,15 +201,15 @@ def groupDataEventsAndAddMaxblipConditional(thisDF):
 
         blip_qs_ievent = df_group["blip_cluster_charge"].agg(list)
         distancesfromMax = distancesFromPt(maxLocation,df_group)
-        print "d's: ",distancesfromMax
+        print("d's: ",distancesfromMax)
 
         if len(distancesfromMax) != len(blip_qs_ievent):
-            print "Length mismatch... in distances and q's"
+            print("Length mismatch... in distances and q's")
         else:
             maxblips.append(eventMaxq)
             qindex = distancesfromMax.index(min(distancesfromMax))
             summedCloseClusters.append(eventMaxq+blip_qs_ievent[qindex])
-            #print "Sum q's: ",summedCloseClusters
+            #print("Sum q's: ",summedCloseClusters)
     return maxblips,summedCloseClusters
 
 def plotAllRegionBlips(df_Event):
@@ -279,7 +264,6 @@ def returnMaxBlipEs(thisDF): #Find the highest blip energy in an event, or event
     return maxblips
 
 def plotMaxBlipLocs(thisDF):  #plot in two dimensions the location of the highest energy blip deposite in a data event
-    #print "working location"
     thisDF_cut = thisDF.query('energy>2.3' )
     fig = plt.figure(figsize=(12,7))
     plt.hist2d(thisDF_cut['blip_z'].values,thisDF_cut['blip_y'].values,bins=(100,100), range=[[-100,1100], [-120,120]],vmin=0,label='OFF Beam Data')#,norm=LogNorm())
@@ -293,7 +277,7 @@ plt.tight_layout()
 def returnMaxBlipQs(thisDF): #return an array of the max blip charges in the dataframe
     maxblips = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
-    print "Number of max blip points: ", df_grouped["blip_cluster_charge"].max().count() #counting number of unique events
+    print("Number of max blip points: ", df_grouped["blip_cluster_charge"].max().count()) #counting number of unique events
     #Here, we're cycling through all the stuff in one event -- since we're on blip branch, this is a collection of blip points
     for group_name, df_group in df_grouped:
         eventMaxq = df_group["blip_cluster_charge"].max()
@@ -308,7 +292,7 @@ def returnMaxBlipsPlusNeighbors(thisDF,completeDetDF,summingRadius):  #Return th
 
     df_grouped = thisDF.groupby(["event","run","timestamp"])
     #cd_grouped = completeDetDF(["event","run","timestamp"])
-    print "Number of events with energies: ", df_grouped["blip_energy"].first().count() #counting number of unique events
+    print("Number of events with energies: ", df_grouped["blip_energy"].first().count()) #counting number of unique events
     counter = 0
 
     for group_name, df_group in df_grouped:
@@ -348,13 +332,13 @@ def returnMaxBlipsPlusNeighbors(thisDF,completeDetDF,summingRadius):  #Return th
         counter+=1
         if counter > 1600:
                 break
-    print "Number of energy clusters in this DF: ", len(summedBlipEs), " out of "," energies total"
+    print("Number of energy clusters in this DF: ", len(summedBlipEs), " out of "," energies total")
     return summedBlipEs,multiplicityInRadius
 
 def returnMinBlipEs(thisDF):  #return minimum blip energies for each event
     minblips = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
-    print "Number of min blip points: ", df_grouped["blip_energy"].min().count() #counting number of unique events
+    print("Number of min blip points: ", df_grouped["blip_energy"].min().count()) #counting number of unique events
     #Here, we're cycling through all the stuff in one event -- since we're on blip branch, this is a collection of blip points
     for group_name, df_group in df_grouped:
         eventMinE = df_group["blip_energy"].min()
@@ -366,7 +350,7 @@ def returnMinBlipEs(thisDF):  #return minimum blip energies for each event
 def returnMinBlipQs(thisDF):  #Return minimum blip charges for an event
     minblips = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
-    print "Number of min blip points: ", df_grouped["blip_cluster_charge"].min().count() #counting number of unique events
+    print("Number of min blip points: ", df_grouped["blip_cluster_charge"].min().count()) #counting number of unique events
     #Here, we're cycling through all the stuff in one event -- since we're on blip branch, this is a collection of blip points
     for group_name, df_group in df_grouped:
         eventMinq = df_group["blip_cluster_charge"].min()
@@ -379,7 +363,7 @@ def returnMinBlipsAndMultiplicityAllData(thisDF,completeDetDF,summingRadius): #s
     multiplicityInRadius = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
     #cd_grouped = completeDetDF(["event","run","timestamp"])
-    print "Number of events with energies: ", df_grouped["blip_energy"].first().count() #counting number of unique events
+    print("Number of events with energies: ", df_grouped["blip_energy"].first().count()) #counting number of unique events
     counter = 0
     for group_name, df_group in df_grouped:
         usedEnergies = []
@@ -415,7 +399,7 @@ def returnMinBlipsAndMultiplicityAllData(thisDF,completeDetDF,summingRadius): #s
         counter+=1
         if counter > 2700:
                 break
-    print "Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total"
+    print("Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total")
     return eventMins, summedBlipEs,multiplicityInRadius
 
 
@@ -428,15 +412,10 @@ def sumMaxClusterEnergiesWithNeighbors(thisDF): #Adds clusters of blips togetehr
     summedCloseClusters = [] #for max blip_Q in an event + nearest neighbor
     maxEs = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
-    print "Number of max blip points: ", df_grouped["blip_energy"].max().count() #counting number of unique events
+    print("Number of max blip points: ", df_grouped["blip_energy"].max().count()) #counting number of unique events
     #Here, we're cycling through all the stuff in one event -- since we're on blip branch, this is a collection of blip points
     for group_name, df_group in df_grouped:
-        #print df_group[group_name]
-        #print df_group
-        #print "\nDf_group EV min: ",df_group["blip_cluster_charge"].min()
-
         eventMaxE = df_group["blip_energy"].max()
-        #print "EventMaxq: ",eventMaxq
         if eventMaxE > -0.01:
             maxLocation = df_group.loc[df_group["blip_energy"].idxmax()]
         else:
@@ -444,22 +423,22 @@ def sumMaxClusterEnergiesWithNeighbors(thisDF): #Adds clusters of blips togetehr
 
         blip_Es_ievent = df_group["blip_energy"].agg(list)
         distancesfromMax = distancesFromPt(maxLocation,df_group)
-        #print "d's: ",distancesfromMax
+        #print("d's: ",distancesfromMax)
 
         if len(distancesfromMax) != len(blip_Es_ievent):
-            print "Length mismatch... in distances and q's"
+            print("Length mismatch... in distances and q's")
         else:
             maxEs.append(eventMaxE)
             Eindex = distancesfromMax.index(min(distancesfromMax))
             summedCloseClusters.append(eventMaxE+blip_Es_ievent[Eindex])
-            #print "Sum q's: ",summedCloseClusters
+            #print("Sum q's: ",summedCloseClusters)
     return maxEs,summedCloseClusters
 
 def sumNearbyClusterEnergies(thisDF):
     summedBlipEs = [] #for First blip_Q in an event + nearest neighbor + next nearest neighbor
     eventEs = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
-    print "Number of events with energies: ", df_grouped["blip_energy"].first().count() #counting number of unique events
+    print("Number of events with energies: ", df_grouped["blip_energy"].first().count()) #counting number of unique events
     counter = 0
     for group_name, df_group in df_grouped:
         used_members = [] #stores indices of group member blips already summed up
@@ -468,7 +447,7 @@ def sumNearbyClusterEnergies(thisDF):
                 continue
             else:
                 used_members.append(j)
-                #print df_group.iloc[j]
+                #print(df_group.iloc[j])
                 member = df_group.iloc[j]
                 blipE = member["blip_energy"]
                 eventEs.append(blipE)
@@ -487,7 +466,7 @@ def sumNearbyClusterEnergies(thisDF):
         counter+=1
         if counter > 1000:
                 break
-    print "Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total"
+    print("Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total")
     return eventEs, summedBlipEs
 
 def sumMaxAndNeighborsInRadius(thisDF,summingRadius): #sum blip ernergies within some well-defined 3D summing radius (slow)
@@ -495,11 +474,11 @@ def sumMaxAndNeighborsInRadius(thisDF,summingRadius): #sum blip ernergies within
     eventEs = []
     multiplicityInRadius = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
-    print "Number of events with energies: ", df_grouped["blip_energy"].first().count() #counting number of unique events
+    print("Number of events with energies: ", df_grouped["blip_energy"].first().count()) #counting number of unique events
     counter = 0
     for group_name, df_group in df_grouped:
         blip_Es_ievent = df_group["blip_energy"].agg(list)
-        print counter
+        print(counter)
         for j in range(len(df_group)):
             if len(blip_Es_ievent) > 0:
                 curr_Max_E = max(blip_Es_ievent)
@@ -529,7 +508,7 @@ def sumMaxAndNeighborsInRadius(thisDF,summingRadius): #sum blip ernergies within
         counter+=1
         if counter > 600:
                 break
-    print "Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total"
+    print("Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total")
     return eventEs, summedBlipEs,multiplicityInRadius
 
 def sumMaxAndNeighborsInRadiusAllData(thisDF,completeDetDF,summingRadius): #sum blips within summing radius -- in a region, but then add blips from anywhere nearby in the detector volume
@@ -538,7 +517,7 @@ def sumMaxAndNeighborsInRadiusAllData(thisDF,completeDetDF,summingRadius): #sum 
     multiplicityInRadius = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
     #cd_grouped = completeDetDF(["event","run","timestamp"])
-    print "Number of events with energies: ", df_grouped["blip_energy"].first().count() #counting number of unique events
+    print("Number of events with energies: ", df_grouped["blip_energy"].first().count()) #counting number of unique events
     counter = 0
     for group_name, df_group in df_grouped:
         usedEnergies = []
@@ -575,7 +554,7 @@ def sumMaxAndNeighborsInRadiusAllData(thisDF,completeDetDF,summingRadius): #sum 
         counter+=1
         if counter > 2700:
                 break
-    print "Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total"
+    print("Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total")
     return eventEs, summedBlipEs,multiplicityInRadius
 
 def sumMaxAndNeighborsInRadiusAllData(thisDF,completeDetDF,summingRadius): #sum blips within summing radius -- in a region, but then add blips from anywhere nearby in the detector volume
@@ -585,7 +564,7 @@ def sumMaxAndNeighborsInRadiusAllData(thisDF,completeDetDF,summingRadius): #sum 
 
     df_grouped = thisDF.groupby(["event","run","timestamp"])
     #cd_grouped = completeDetDF(["event","run","timestamp"])
-    print "Number of events with energies: ", df_grouped["blip_energy"].first().count() #counting number of unique events
+    print("Number of events with energies: ", df_grouped["blip_energy"].first().count()) #counting number of unique events
     counter = 0
     for group_name, df_group in df_grouped:
         usedEnergies = []
@@ -622,7 +601,7 @@ def sumMaxAndNeighborsInRadiusAllData(thisDF,completeDetDF,summingRadius): #sum 
         counter+=1
         if counter > 1600:
                 break
-    print "Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total"
+    print("Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total")
     return eventEs, summedBlipEs,multiplicityInRadius
 
 def sumOnlyMultiBlipsEvents(thisDF,summingRadius): #sum blips within summing radius, and only in events with many blips
@@ -630,7 +609,7 @@ def sumOnlyMultiBlipsEvents(thisDF,summingRadius): #sum blips within summing rad
     eventEs = []
     multiplicityInRadius = []
     df_grouped = thisDF.groupby(["event","run","timestamp"])
-    print "Number of events with energies: ", df_grouped["blip_energy"].first().count() #counting number of unique events
+    print("Number of events with energies: ", df_grouped["blip_energy"].first().count()) #counting number of unique events
     counter = 0
     for group_name, df_group in df_grouped:
         blip_Es_ievent = df_group["blip_energy"].agg(list)
@@ -664,5 +643,5 @@ def sumOnlyMultiBlipsEvents(thisDF,summingRadius): #sum blips within summing rad
         counter+=1
         if counter > 600:
                 break
-    print "Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total"
+    print("Number of energy clusters in this DF: ", len(summedBlipEs), " out of ", len(eventEs), " energies total")
     return summedBlipEs,multiplicityInRadius

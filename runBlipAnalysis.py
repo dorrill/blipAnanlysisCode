@@ -1,12 +1,9 @@
-#Blip Analysis Code Used to examine low energy signals in our LArTPC Detector
-# This is a magic line that makes matplotlib plots appear in the notebooknot in a separate window
-#%matplotlib inline
-
 ##############################################################################
 #*######################                              ######################*#
 #######################     Ryan's Blip Analysis Here  #######################
 #*######################                              ######################*#
 #*##########################################################################*#
+#Blip Analysis Code Used to examine low energy signals in our LArTPC Detector#
 
 import math
 import itertools
@@ -34,7 +31,6 @@ from glob import glob
 from matplotlib.colors import LogNorm
 from scipy.interpolate import interp1d
 from scipy.misc import factorial
-
 plt.rcParams.update({'font.size': 20})
 
 #*##########################################################################*#
@@ -52,7 +48,7 @@ blipTree= 'bliptree'
 newFileTree='/blipana/bliptree'
 df_blip_file1 = pd.DataFrame( root2array(blip_file1,blipTree) )
 print("Length of data frame and a short sample of events: ")
-print(len(df_blip_file2))
+print((len(df_blip_file2)))
 df_blip_file2.head()
 
 #QOL Functions to plot the initial location of blips and energy
